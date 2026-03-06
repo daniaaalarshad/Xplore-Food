@@ -2,7 +2,7 @@ import express from "express";
 import next from "next";
 
 const dev = process.env.NODE_ENV !== "production";
-const app = next({ dev });
+const app = next({ dev, hostname: "0.0.0.0", port: 5000 });
 const handle = app.getRequestHandler();
 
 const PORT = 5000;
