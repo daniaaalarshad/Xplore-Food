@@ -4,10 +4,9 @@ import connectPgSimple from "connect-pg-simple";
 import next from "next";
 
 const dev = process.env.NODE_ENV !== "production";
-const app = next({ dev, hostname: "0.0.0.0", port: 5000 });
+const PORT = parseInt(process.env.PORT || "3000");
+const app = next({ dev, hostname: "0.0.0.0", port: PORT });
 const handle = app.getRequestHandler();
-
-const PORT = 5000;
 
 app.prepare().then(async () => {
   const server = express();
