@@ -7,14 +7,13 @@ import {
   Menu,
   X,
   UtensilsCrossed,
-  User,
   LogOut,
   LayoutDashboard,
   ChevronDown,
 } from "lucide-react";
 
 export default function Header() {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
@@ -61,17 +60,9 @@ export default function Header() {
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                   className="flex items-center gap-2 text-gray-700 hover:text-primary-400 transition-colors"
                 >
-                  {user.profileImageUrl ? (
-                    <img
-                      src={user.profileImageUrl}
-                      alt=""
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-primary-400 text-white flex items-center justify-center text-sm font-medium">
-                      {(user.firstName?.[0] || user.email?.[0] || "U").toUpperCase()}
-                    </div>
-                  )}
+                  <div className="w-8 h-8 rounded-full bg-primary-400 text-white flex items-center justify-center text-sm font-medium">
+                    {(user.firstName?.[0] || user.email?.[0] || "U").toUpperCase()}
+                  </div>
                   <span className="text-sm font-medium">{user.firstName || "User"}</span>
                   <ChevronDown className="h-4 w-4" />
                 </button>
@@ -90,24 +81,35 @@ export default function Header() {
                         <LayoutDashboard className="h-4 w-4" />
                         Dashboard
                       </Link>
-                      <a
-                        href="/api/logout"
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      <button
+                        onClick={() => {
+                          setUserMenuOpen(false);
+                          logout();
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left"
                       >
                         <LogOut className="h-4 w-4" />
                         Sign Out
-                      </a>
+                      </button>
                     </div>
                   </>
                 )}
               </div>
             ) : (
-              <a
-                href="/api/login"
-                className="bg-primary-400 text-white px-5 py-2 rounded-lg font-medium hover:bg-primary-500 transition-colors"
-              >
-                Sign In
-              </a>
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/login"
+                  className="text-gray-600 hover:text-primary-400 font-medium transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/register"
+                  className="bg-primary-400 text-white px-5 py-2 rounded-lg font-medium hover:bg-primary-500 transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </div>
             )}
           </div>
 
@@ -148,19 +150,32 @@ export default function Header() {
             )}
             <div className="pt-2 border-t">
               {isAuthenticated ? (
-                <a
-                  href="/api/logout"
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    logout();
+                  }}
                   className="block py-2 text-gray-600 hover:text-primary-400 font-medium"
                 >
                   Sign Out
-                </a>
+                </button>
               ) : (
-                <a
-                  href="/api/login"
-                  className="block py-2 text-primary-400 font-medium"
-                >
-                  Sign In
-                </a>
+                <div className="space-y-2">
+                  <Link
+                    href="/login"
+                    className="block py-2 text-gray-600 hover:text-primary-400 font-medium"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="block py-2 text-primary-400 font-medium"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Sign Up
+                  </Link>
+                </div>
               )}
             </div>
           </div>

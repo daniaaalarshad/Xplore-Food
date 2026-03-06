@@ -102,7 +102,7 @@ export default function RestaurantDetailPage() {
 
   const toggleFavorite = async () => {
     if (!isAuthenticated) {
-      window.location.href = "/api/login";
+      window.location.href = "/login";
       return;
     }
     try {
@@ -119,7 +119,7 @@ export default function RestaurantDetailPage() {
 
   const submitReview = async () => {
     if (!isAuthenticated) {
-      window.location.href = "/api/login";
+      window.location.href = "/login";
       return;
     }
     if (reviewRating === 0) return;
@@ -441,7 +441,7 @@ export default function RestaurantDetailPage() {
                     Sign in to leave a review
                   </p>
                   <a
-                    href="/api/login"
+                    href="/login"
                     className="inline-block bg-primary-400 text-white px-5 py-2 rounded-lg font-medium hover:bg-primary-500 transition-colors"
                   >
                     Sign In

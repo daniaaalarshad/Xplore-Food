@@ -46,7 +46,7 @@ export default function AddRestaurantPage() {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      window.location.href = "/api/login";
+      window.location.href = "/login";
     }
   }, [isAuthenticated, isLoading]);
 

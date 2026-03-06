@@ -1,25 +1,14 @@
 import { Router } from "express";
 import { db } from "../db";
-import { favorites, restaurants, restaurantPhotos, cities } from "../../shared/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { favorites, restaurants, cities } from "../../shared/schema";
+import { eq, and } from "drizzle-orm";
+import { isAuthenticated } from "./auth";
 
 const router = Router();
 
-function getAuthMiddleware() {
+router.get("/", isAuthenticated, async (req: any, res) => {
   try {
-    const { isAuthenticated } = require("../replit_integrations/auth");
-    return isAuthenticated;
-  } catch {
-    return (_req: any, res: any) => res.status(401).json({ error: "Auth not available" });
-  }
-}
-
-const authMiddleware = getAuthMiddleware();
-
-router.get("/", authMiddleware, async (req: any, res) => {
-  try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    const userId = req.session.userId;
 
     const userFavorites = await db
       .select({
@@ -46,11 +35,9 @@ router.get("/", authMiddleware, async (req: any, res) => {
   }
 });
 
-router.post("/:restaurantId", authMiddleware, async (req: any, res) => {
+router.post("/:restaurantId", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
-
+    const userId = req.session.userId;
     const restaurantId = parseInt(req.params.restaurantId);
 
     const [existing] = await db
@@ -73,11 +60,9 @@ router.post("/:restaurantId", authMiddleware, async (req: any, res) => {
   }
 });
 
-router.get("/check/:restaurantId", authMiddleware, async (req: any, res) => {
+router.get("/check/:restaurantId", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) return res.json({ favorited: false });
-
+    const userId = req.session.userId;
     const restaurantId = parseInt(req.params.restaurantId);
 
     const [existing] = await db

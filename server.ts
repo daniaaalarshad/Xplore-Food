@@ -1,4 +1,6 @@
 import express from "express";
+import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
 import next from "next";
 
 const dev = process.env.NODE_ENV !== "production";
@@ -12,16 +14,30 @@ app.prepare().then(async () => {
 
   server.use(express.json());
 
-  try {
-    const { setupAuth, registerAuthRoutes } = await import(
-      "./server/replit_integrations/auth"
-    );
-    await setupAuth(server);
-    registerAuthRoutes(server);
-    console.log("Auth setup complete");
-  } catch (error) {
-    console.warn("Auth setup skipped:", error);
+  const PgStore = connectPgSimple(session);
+  const isProduction = process.env.NODE_ENV === "production";
+  if (isProduction) {
+    server.set("trust proxy", 1);
   }
+
+  server.use(
+    session({
+      store: new PgStore({
+        conString: process.env.DATABASE_URL,
+        tableName: "sessions",
+        createTableIfMissing: false,
+      }),
+      secret: process.env.SESSION_SECRET || "xplore-food-dev-secret-key",
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: "lax",
+      },
+    })
+  );
 
   const apiRoutes = (await import("./server/routes")).default;
   server.use("/api", apiRoutes);

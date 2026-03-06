@@ -8,24 +8,13 @@ import {
   cities,
 } from "../../shared/schema";
 import { eq, and, sql, asc } from "drizzle-orm";
+import { isAuthenticated } from "./auth";
 
 const router = Router();
 
-function getAuthMiddleware() {
+router.get("/restaurants", isAuthenticated, async (req: any, res) => {
   try {
-    const { isAuthenticated } = require("../replit_integrations/auth");
-    return isAuthenticated;
-  } catch {
-    return (_req: any, res: any) => res.status(401).json({ error: "Auth not available" });
-  }
-}
-
-const authMiddleware = getAuthMiddleware();
-
-router.get("/restaurants", authMiddleware, async (req: any, res) => {
-  try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    const userId = req.session.userId;
 
     const myRestaurants = await db
       .select({
@@ -72,10 +61,9 @@ router.get("/restaurants", authMiddleware, async (req: any, res) => {
   }
 });
 
-router.post("/restaurants", authMiddleware, async (req: any, res) => {
+router.post("/restaurants", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    const userId = req.session.userId;
 
     const {
       name,
@@ -134,11 +122,9 @@ router.post("/restaurants", authMiddleware, async (req: any, res) => {
   }
 });
 
-router.put("/restaurants/:id", authMiddleware, async (req: any, res) => {
+router.put("/restaurants/:id", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
-
+    const userId = req.session.userId;
     const id = parseInt(req.params.id);
 
     const [existing] = await db
@@ -193,11 +179,9 @@ router.put("/restaurants/:id", authMiddleware, async (req: any, res) => {
   }
 });
 
-router.delete("/restaurants/:id", authMiddleware, async (req: any, res) => {
+router.delete("/restaurants/:id", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
-
+    const userId = req.session.userId;
     const id = parseInt(req.params.id);
 
     const [existing] = await db
@@ -216,11 +200,9 @@ router.delete("/restaurants/:id", authMiddleware, async (req: any, res) => {
   }
 });
 
-router.get("/restaurants/:id/menu", authMiddleware, async (req: any, res) => {
+router.get("/restaurants/:id/menu", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
-
+    const userId = req.session.userId;
     const id = parseInt(req.params.id);
 
     const [existing] = await db
@@ -263,11 +245,9 @@ router.get("/restaurants/:id/menu", authMiddleware, async (req: any, res) => {
   }
 });
 
-router.post("/restaurants/:id/menu-categories", authMiddleware, async (req: any, res) => {
+router.post("/restaurants/:id/menu-categories", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
-
+    const userId = req.session.userId;
     const restaurantId = parseInt(req.params.id);
 
     const [existing] = await db
@@ -293,11 +273,9 @@ router.post("/restaurants/:id/menu-categories", authMiddleware, async (req: any,
   }
 });
 
-router.post("/restaurants/:id/menu-items", authMiddleware, async (req: any, res) => {
+router.post("/restaurants/:id/menu-items", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
-
+    const userId = req.session.userId;
     const restaurantId = parseInt(req.params.id);
 
     const [existing] = await db
@@ -349,11 +327,9 @@ router.post("/restaurants/:id/menu-items", authMiddleware, async (req: any, res)
   }
 });
 
-router.delete("/menu-categories/:id", authMiddleware, async (req: any, res) => {
+router.delete("/menu-categories/:id", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
-
+    const userId = req.session.userId;
     const categoryId = parseInt(req.params.id);
 
     const [category] = await db
@@ -373,11 +349,9 @@ router.delete("/menu-categories/:id", authMiddleware, async (req: any, res) => {
   }
 });
 
-router.delete("/menu-items/:id", authMiddleware, async (req: any, res) => {
+router.delete("/menu-items/:id", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
-
+    const userId = req.session.userId;
     const itemId = parseInt(req.params.id);
 
     const [item] = await db
@@ -398,11 +372,9 @@ router.delete("/menu-items/:id", authMiddleware, async (req: any, res) => {
   }
 });
 
-router.post("/restaurants/:id/photos", authMiddleware, async (req: any, res) => {
+router.post("/restaurants/:id/photos", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
-
+    const userId = req.session.userId;
     const restaurantId = parseInt(req.params.id);
 
     const [existing] = await db

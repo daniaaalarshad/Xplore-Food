@@ -54,7 +54,7 @@ export default function MenuManagerPage() {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      window.location.href = "/api/login";
+      window.location.href = "/login";
     }
   }, [isAuthenticated, authLoading]);
 

@@ -89,12 +89,12 @@ export default function DashboardPage() {
         <p className="text-gray-500 mb-6">
           Sign in to manage your restaurant listings
         </p>
-        <a
-          href="/api/login"
+        <Link
+          href="/login"
           className="inline-block bg-primary-400 text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-500 transition-colors"
         >
           Sign In
-        </a>
+        </Link>
       </div>
     );
   }

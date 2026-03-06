@@ -2,19 +2,9 @@ import { Router } from "express";
 import { db } from "../db";
 import { reviews, restaurants, users } from "../../shared/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
+import { isAuthenticated } from "./auth";
 
 const router = Router();
-
-function getAuthMiddleware() {
-  try {
-    const { isAuthenticated } = require("../replit_integrations/auth");
-    return isAuthenticated;
-  } catch {
-    return (_req: any, res: any) => res.status(401).json({ error: "Auth not available" });
-  }
-}
-
-const authMiddleware = getAuthMiddleware();
 
 router.get("/:restaurantId", async (req, res) => {
   try {
@@ -43,11 +33,9 @@ router.get("/:restaurantId", async (req, res) => {
   }
 });
 
-router.post("/:restaurantId", authMiddleware, async (req: any, res) => {
+router.post("/:restaurantId", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
-
+    const userId = req.session.userId;
     const restaurantId = parseInt(req.params.restaurantId);
     const { rating, comment } = req.body;
 

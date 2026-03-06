@@ -247,7 +247,7 @@ export default function HomePage() {
         </div>
         <div className="text-center mt-10">
           <a
-            href="/api/login"
+            href="/register"
             className="inline-flex items-center gap-2 bg-primary-400 text-white px-8 py-3 rounded-xl font-semibold hover:bg-primary-500 transition-colors text-lg"
           >
             List Your Restaurant <ArrowRight className="h-5 w-5" />
