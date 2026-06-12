@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useAuth } from "@/app/layout";
+import { useAuth } from "@/app/providers";
 import StarRating from "@/components/StarRating";
 import {
   MapPin,
