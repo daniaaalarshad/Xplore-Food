@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useAuth } from "@/app/layout";
+import { useAuth } from "@/app/providers";
 import {
   Menu,
   X,

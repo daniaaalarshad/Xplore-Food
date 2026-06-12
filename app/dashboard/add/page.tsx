@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/layout";
+import { useAuth } from "@/app/providers";
 import { ArrowLeft, Save } from "lucide-react";
 
 interface City {
